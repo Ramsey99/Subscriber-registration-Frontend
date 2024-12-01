@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
+const BACKEND_URL = "https://subscriber-registration-backend-1.onrender.com";
+
 const SubscriberRegistration = () => {
   const [showPopup, setShowPopup] = useState(false);
 
   const [emailVerificationStep, setEmailVerificationStep] = useState(1);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [otp, setOtp] = useState("");
 
   const [formData, setFormData] = useState({
     applicantName: "",
@@ -30,34 +33,6 @@ const SubscriberRegistration = () => {
     authorizedSignatory: "",
   });
 
-  const [paperId, setPaperId] = useState("");
-
-  const createSubscriber = () => {
-    const subscriber = {
-      applicantName: formData.applicantName,
-      applicantDesignation: formData.applicantDesignation,
-      applicantAddress: formData.applicantAddress,
-      applicantCity: formData.applicantCity,
-      applicantState: formData.applicantState,
-      applicantCountry: formData.applicantCountry,
-      applicantMobile: formData.applicantMobile,
-      applicantEmail: formData.applicantEmail,
-      organizationName: formData.organizationName,
-      organizationAddress: formData.organizationAddress,
-      organizationCity: formData.organizationCity,
-      organizationState: formData.organizationState,
-      organizationCountry: formData.organizationCountry,
-      organizationContactNumber: formData.organizationContactNumber,
-      organizationEmail: formData.organizationEmail,
-      conferenceTitle: formData.conferenceTitle,
-      conferenceDiscipline: formData.conferenceDiscipline,
-      conferenceCountry: formData.conferenceCountry,
-      conferenceEmail: formData.conferenceEmail,
-      authorizedSignatory: formData.authorizedSignatory,
-    };
-    console.log(subscriber);
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -80,7 +55,7 @@ const SubscriberRegistration = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/send-otp", {
+      const response = await fetch(`${BACKEND_URL}/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.conferenceEmail }),
@@ -102,13 +77,20 @@ const SubscriberRegistration = () => {
   };
 
   const handleVerifyOtp = async () => {
+    if (!otp) {
+      alert("Please enter the OTP.");
+      return;
+    }
+
+    setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/verify-otp", {
+      const response = await fetch(`${BACKEND_URL}/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.conferenceEmail, otp }),
       });
 
+      setIsLoading(false);
       if (response.ok) {
         alert("Email verified successfully!");
         setEmailVerificationStep(3); // Mark email as verified
@@ -116,14 +98,38 @@ const SubscriberRegistration = () => {
         alert("Invalid OTP. Please try again.");
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("Error verifying OTP:", error);
     }
   };
 
   const validateForm = () => {
-    for (let key in formData) {
+    const requiredFields = {
+      applicantName: "Applicant Name",
+      applicantDesignation: "Applicant Designation",
+      applicantAddress: "Applicant Address",
+      applicantCity: "Applicant City",
+      applicantState: "Applicant State",
+      applicantCountry: "Applicant Country",
+      applicantMobile: "Applicant Mobile",
+      applicantEmail: "Applicant Email",
+      organizationName: "Organization Name",
+      organizationAddress: "Organization Address",
+      organizationCity: "Organization City",
+      organizationState: "Organization State",
+      organizationCountry: "Organization Country",
+      organizationContactNumber: "Organization Contact Number",
+      organizationEmail: "Organization Email",
+      conferenceTitle: "Conference Title",
+      conferenceDiscipline: "Conference Discipline",
+      conferenceCountry: "Conference Country",
+      conferenceEmail: "Conference Email",
+      authorizedSignatory: "Authorized Signatory",
+    };
+
+    for (let key in requiredFields) {
       if (!formData[key]) {
-        alert(`${key} is required.`);
+        alert(`${requiredFields[key]} is required.`);
         return false;
       }
     }
@@ -132,28 +138,46 @@ const SubscriberRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Validate all required fields
+
     if (!validateForm()) return;
-  
+
     setIsLoading(true);
-  
     try {
-      const response = await fetch("http://localhost:5000/api/subscribers", {
+      const response = await fetch(`${BACKEND_URL}/api/subscribers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData), // Send form data as JSON
+        body: JSON.stringify(formData),
       });
-  
+
       setIsLoading(false);
-  
       if (response.ok) {
         const data = await response.json();
-        alert(data.message); // Show success message
+        alert(data.message);
         console.log("Subscriber created:", data.subscriber);
-        setFormData({}); // Clear the form (optional)
+        setFormData({
+          applicantName: "",
+          applicantDesignation: "",
+          applicantAddress: "",
+          applicantCity: "",
+          applicantState: "",
+          applicantCountry: "",
+          applicantMobile: "",
+          applicantEmail: "",
+          organizationName: "",
+          organizationAddress: "",
+          organizationCity: "",
+          organizationState: "",
+          organizationCountry: "",
+          organizationContactNumber: "",
+          organizationEmail: "",
+          conferenceTitle: "",
+          conferenceDiscipline: "",
+          conferenceCountry: "",
+          conferenceEmail: "",
+          authorizedSignatory: "",
+        });
       } else {
         alert("Failed to create subscriber. Please try again.");
       }
