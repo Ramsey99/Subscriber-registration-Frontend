@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
+
 const SubscriberRegistration = () => {
   const [showPopup, setShowPopup] = useState(false);
-
   const [emailVerificationStep, setEmailVerificationStep] = useState(1);
   const [isOtpSent, setIsOtpSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,30 +30,13 @@ const SubscriberRegistration = () => {
     authorizedSignatory: "",
   });
 
-  const [paperId, setPaperId] = useState("");
+  const [otp, setOtp] = useState("");
+
+  const API_URL = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
 
   const createSubscriber = () => {
     const subscriber = {
-      applicantName: formData.applicantName,
-      applicantDesignation: formData.applicantDesignation,
-      applicantAddress: formData.applicantAddress,
-      applicantCity: formData.applicantCity,
-      applicantState: formData.applicantState,
-      applicantCountry: formData.applicantCountry,
-      applicantMobile: formData.applicantMobile,
-      applicantEmail: formData.applicantEmail,
-      organizationName: formData.organizationName,
-      organizationAddress: formData.organizationAddress,
-      organizationCity: formData.organizationCity,
-      organizationState: formData.organizationState,
-      organizationCountry: formData.organizationCountry,
-      organizationContactNumber: formData.organizationContactNumber,
-      organizationEmail: formData.organizationEmail,
-      conferenceTitle: formData.conferenceTitle,
-      conferenceDiscipline: formData.conferenceDiscipline,
-      conferenceCountry: formData.conferenceCountry,
-      conferenceEmail: formData.conferenceEmail,
-      authorizedSignatory: formData.authorizedSignatory,
+      ...formData,
     };
     console.log(subscriber);
   };
@@ -80,7 +63,7 @@ const SubscriberRegistration = () => {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/send-otp", {
+      const response = await fetch(`${API_URL}/send-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.conferenceEmail }),
@@ -103,7 +86,7 @@ const SubscriberRegistration = () => {
 
   const handleVerifyOtp = async () => {
     try {
-      const response = await fetch("http://localhost:5000/verify-otp", {
+      const response = await fetch(`${API_URL}/verify-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.conferenceEmail, otp }),
@@ -123,7 +106,7 @@ const SubscriberRegistration = () => {
   const validateForm = () => {
     for (let key in formData) {
       if (!formData[key]) {
-        errors.push(`${key} is required.`);
+        alert(`${key} is required.`);
         return false;
       }
     }
@@ -132,23 +115,21 @@ const SubscriberRegistration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Validate all required fields
+
     if (!validateForm()) return;
-  
+
     setIsLoading(true);
-  
     try {
-      const response = await fetch("http://localhost:5000/api/subscribers", {
+      const response = await fetch(`${API_URL}/api/subscribers`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData), // Send form data as JSON
+        body: JSON.stringify(formData),
       });
-  
+
       setIsLoading(false);
-  
+
       if (response.ok) {
         const data = await response.json();
         alert(data.message); // Show success message
