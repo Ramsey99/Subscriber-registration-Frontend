@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 const SubscriberRegistration = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
   const [formData, setFormData] = useState({
     applicantName: "",
     applicantDesignation: "",
@@ -47,67 +48,14 @@ const SubscriberRegistration = () => {
     });
   };
 
-  // Send Verification Email to Conference Email
-  const sendVerificationEmail = async () => {
-    if (!formData.conferenceEmail) {
-      alert("Conference email is required for verification.");
-      return;
-    }
-
-    try {
-      const response = await fetch(`${API_URL}/api/subscribers`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: formData.conferenceEmail }), // Use official correspondence email
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        alert(data.message); // Notify user of successful email sending
-      } else {
-        alert("Failed to send verification email. Please try again.");
-      }
-    } catch (error) {
-      console.error("Error sending verification email:", error);
-      alert("An error occurred. Please try again.");
-    }
-  };
-
   // Handle Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!validateForm()) return;
-  
+
     setIsLoading(true);
-  
-    // Clear form data before making the API call
-    const initialFormData = {
-      applicantName: "",
-      applicantDesignation: "",
-      applicantAddress: "",
-      applicantCity: "",
-      applicantState: "",
-      applicantCountry: "",
-      applicantMobile: "",
-      applicantEmail: "",
-      organizationName: "",
-      organizationAddress: "",
-      organizationCity: "",
-      organizationState: "",
-      organizationCountry: "",
-      organizationContactNumber: "",
-      organizationEmail: "",
-      conferenceTitle: "",
-      conferenceDiscipline: "",
-      conferenceCountry: "",
-      conferenceEmail: "",
-      authorizedSignatory: "",
-    };
-    setFormData(initialFormData);
-  
+
     try {
       const response = await fetch(`${API_URL}/api/subscribers`, {
         method: "POST",
@@ -116,28 +64,49 @@ const SubscriberRegistration = () => {
         },
         body: JSON.stringify(formData),
       });
-  
-      setIsLoading(false);
-  
+
       if (response.ok) {
         const data = await response.json();
-        alert(data.message);
         console.log("Subscriber created:", data.subscriber);
-        // After resetting the form, send the verification email
-        await sendVerificationEmail();
+
+        // Show success modal
+        setIsModalOpen(true);
+
+        // Clear form
+        setFormData({
+          applicantName: "",
+          applicantDesignation: "",
+          applicantAddress: "",
+          applicantCity: "",
+          applicantState: "",
+          applicantCountry: "",
+          applicantMobile: "",
+          applicantEmail: "",
+          organizationName: "",
+          organizationAddress: "",
+          organizationCity: "",
+          organizationState: "",
+          organizationCountry: "",
+          organizationContactNumber: "",
+          organizationEmail: "",
+          conferenceTitle: "",
+          conferenceDiscipline: "",
+          conferenceCountry: "",
+          conferenceEmail: "",
+          authorizedSignatory: "",
+        });
       } else {
         const errorData = await response.json();
         console.error("Error data:", errorData);
         alert(`Failed to create subscriber: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
-      setIsLoading(false);
       console.error("Error submitting data:", error);
       alert("An error occurred while submitting the data. Please try again later.");
+    } finally {
+      setIsLoading(false);
     }
   };
-  
-  
 
   return (
     <div className="container mx-auto">
@@ -208,8 +177,8 @@ const SubscriberRegistration = () => {
                 </div>
               </section>
 
-              {/* Conference Section */}
-              <section>
+                {/* Conference Section */}
+                <section>
                 <h2 className="text-lg font-semibold text-gray-700">Conference</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
@@ -269,6 +238,22 @@ const SubscriberRegistration = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-md max-w-sm w-full text-center">
+            <h2 className="text-lg font-semibold mb-4">Your subscriber registration was successful</h2>
+            <p>A verification mail send to your official mail address. Please check and verify by clicking on 'Verify Email'.</p>
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
