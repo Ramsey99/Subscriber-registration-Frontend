@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const VerifyEmail = () => {
   const location = useLocation();
-  const navigate = useNavigate();  // Initialize useNavigate
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -16,45 +17,74 @@ const VerifyEmail = () => {
       return;
     }
 
-    // Call backend to verify the email without token
-    fetch(`${VITE_SUBSCRIBER_REGISTRATION_URL}/api/verify-email?email=${email}`)
-      .then(response => {
+    const apiUrl = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
+
+    if (!apiUrl) {
+      console.error("API URL is not defined.");
+      setMessage("Internal error occurred. Please contact support.");
+      return;
+    }
+
+    setLoading(true);
+
+    fetch(`${apiUrl}/api/verify-email?email=${encodeURIComponent(email)}`)
+      .then((response) => {
+        setLoading(false);
         if (!response.ok) {
-          // If the response isn't OK (like 404 or 500), throw an error
           throw new Error("Email verification failed");
         }
         return response.json();
       })
-      .then(data => {
+      .then((data) => {
         if (data.message === "Email verified successfully!") {
           setMessage("Email verified successfully!");
-          setShowModal(true); // Show the modal
+          setShowModal(true);
         } else {
           setMessage("Email verification failed.");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error verifying email:", error);
-        setMessage("Error occurred. Please try again.");
+        setLoading(false);
+        setMessage("An error occurred. Please try again later.");
       });
   }, [location]);
 
   const closeModal = () => {
     setShowModal(false);
-    navigate("/");  // Redirect to subscriber registration page
+    navigate("/"); // Redirect to the homepage or another desired page
   };
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="text-center p-4 bg-white rounded-lg shadow-lg w-full max-w-md">
-        <div className="text-lg text-gray-700 mb-4">{message}</div>
+        {loading ? (
+          <div className="text-gray-700 text-lg">Verifying email...</div>
+        ) : (
+          <div className="text-gray-700 text-lg mb-4">{message}</div>
+        )}
 
         {/* Modal for success message */}
         {showModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+            role="dialog"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+          >
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-              <h2 className="text-2xl text-green-600 mb-4">Email Verified</h2>
-              <p className="text-gray-600 mb-6">{message}</p>
+              <h2
+                id="modal-title"
+                className="text-2xl text-green-600 mb-4"
+              >
+                Email Verified
+              </h2>
+              <p
+                id="modal-description"
+                className="text-gray-600 mb-6"
+              >
+                {message}
+              </p>
               <button
                 className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
                 onClick={closeModal}
