@@ -17,7 +17,7 @@ const VerifyEmail = () => {
     }
 
     // Call backend to verify the email without token
-    fetch(`http://localhost:5000/api/verify-email?email=${email}`)
+    fetch(`${VITE_SUBSCRIBER_REGISTRATION_URL}/api/verify-email?email=${email}`)
       .then(response => {
         if (!response.ok) {
           // If the response isn't OK (like 404 or 500), throw an error
