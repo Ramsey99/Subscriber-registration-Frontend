@@ -7,6 +7,7 @@ const VerifyEmail = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false); // Track email verification status
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -38,6 +39,7 @@ const VerifyEmail = () => {
       .then((data) => {
         if (data.message === "Email verified successfully!") {
           setMessage("Email verified successfully!");
+          setEmailVerified(true);  // Set email as verified
           setShowModal(true);
         } else {
           setMessage("Email verification failed.");
@@ -52,7 +54,10 @@ const VerifyEmail = () => {
 
   const closeModal = () => {
     setShowModal(false);
-    window.location.href = "https://cms-alpha-sand.vercel.app/"; // Redirect to the external URL
+    if (emailVerified) {
+      // Only redirect if email is successfully verified
+      window.location.href = "https://cms-alpha-sand.vercel.app/"; // Redirect to the external URL
+    }
   };
 
   return (
