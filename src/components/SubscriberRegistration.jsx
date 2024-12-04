@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SubscriberRegistration = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -27,19 +29,7 @@ const SubscriberRegistration = () => {
 
   const API_URL = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
 
-  const createSubscriber = () => {
-    const subscriber = { ...formData };
-    console.log(subscriber);
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
+  // Validate Form
   const validateForm = () => {
     for (let key in formData) {
       if (!formData[key]) {
@@ -50,12 +40,23 @@ const SubscriberRegistration = () => {
     return true;
   };
 
+  // Handle Form Data Change
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  // Handle Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
-    setIsLoading(true);  // Disable button during submission
+    setIsLoading(true);
+
     try {
       const response = await fetch(`${API_URL}/api/subscribers`, {
         method: "POST",
@@ -69,10 +70,14 @@ const SubscriberRegistration = () => {
 
       if (response.ok) {
         const data = await response.json();
-        alert(data.message); // Show success message
-        console.log("Subscriber created:", data.subscriber);
 
-        // Clear the form upon successful submission
+        // Display success toast
+        toast.success(
+          `Subscriber created successfully! Verification email sent to ${formData.conferenceEmail}. Please verify your email.`,
+          {position: "top-center"}
+        );
+
+        // Reset form data
         setFormData({
           applicantName: "",
           applicantDesignation: "",
@@ -96,19 +101,19 @@ const SubscriberRegistration = () => {
           authorizedSignatory: "",
         });
       } else {
-        alert("Failed to create subscriber. Please try again.");
+        const errorData = await response.json();
+        toast.error(`Failed to create subscriber: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
       setIsLoading(false);
+      toast.error("An error occurred while submitting the data. Please try again later.");
       console.error("Error submitting data:", error);
-      alert(
-        "An error occurred while submitting the data. Please try again later."
-      );
     }
   };
 
   return (
     <div className="container mx-auto">
+      <ToastContainer />
       <div className="flex justify-center">
         <div className="w-full h-full border border-3 shadow-sm p-3 mb-5 bg-body-tertiary rounded bg-slate-50 max-w-5xl mt-5">
           <div className="bg-white shadow-md rounded-lg p-6">
@@ -117,6 +122,7 @@ const SubscriberRegistration = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-8">
+              {/* Applicant Section */}
               <section>
                 <h2 className="text-lg font-semibold text-gray-700">Applicant</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -146,6 +152,7 @@ const SubscriberRegistration = () => {
                 </div>
               </section>
 
+              {/* Organization Section */}
               <section>
                 <h2 className="text-lg font-semibold text-gray-700">Organization</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -174,6 +181,7 @@ const SubscriberRegistration = () => {
                 </div>
               </section>
 
+              {/* Conference Section */}
               <section>
                 <h2 className="text-lg font-semibold text-gray-700">Conference</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

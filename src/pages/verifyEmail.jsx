@@ -52,7 +52,7 @@ const VerifyEmail = () => {
 
   const closeModal = () => {
     setShowModal(false);
-    navigate("/"); // Redirect to the homepage or another desired page
+    window.location.href = "https://cms-alpha-sand.vercel.app/"; // Redirect to the external URL
   };
 
   return (
