@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 const SubscriberRegistration = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -49,14 +47,67 @@ const SubscriberRegistration = () => {
     });
   };
 
+  // Send Verification Email to Conference Email
+  const sendVerificationEmail = async () => {
+    if (!formData.conferenceEmail) {
+      alert("Conference email is required for verification.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/subscribers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: formData.conferenceEmail }), // Use official correspondence email
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        alert(data.message); // Notify user of successful email sending
+      } else {
+        alert("Failed to send verification email. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+      alert("An error occurred. Please try again.");
+    }
+  };
+
   // Handle Form Submit
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!validateForm()) return;
-
+  
     setIsLoading(true);
-
+  
+    // Clear form data before making the API call
+    const initialFormData = {
+      applicantName: "",
+      applicantDesignation: "",
+      applicantAddress: "",
+      applicantCity: "",
+      applicantState: "",
+      applicantCountry: "",
+      applicantMobile: "",
+      applicantEmail: "",
+      organizationName: "",
+      organizationAddress: "",
+      organizationCity: "",
+      organizationState: "",
+      organizationCountry: "",
+      organizationContactNumber: "",
+      organizationEmail: "",
+      conferenceTitle: "",
+      conferenceDiscipline: "",
+      conferenceCountry: "",
+      conferenceEmail: "",
+      authorizedSignatory: "",
+    };
+    setFormData(initialFormData);
+  
     try {
       const response = await fetch(`${API_URL}/api/subscribers`, {
         method: "POST",
@@ -65,55 +116,31 @@ const SubscriberRegistration = () => {
         },
         body: JSON.stringify(formData),
       });
-
+  
       setIsLoading(false);
-
+  
       if (response.ok) {
         const data = await response.json();
-
-        // Display success toast
-        toast.success(
-          `Subscriber created successfully! Verification email sent to ${formData.conferenceEmail}. Please verify your email.`,
-          {position: "top-center"}
-        );
-
-        // Reset form data
-        setFormData({
-          applicantName: "",
-          applicantDesignation: "",
-          applicantAddress: "",
-          applicantCity: "",
-          applicantState: "",
-          applicantCountry: "",
-          applicantMobile: "",
-          applicantEmail: "",
-          organizationName: "",
-          organizationAddress: "",
-          organizationCity: "",
-          organizationState: "",
-          organizationCountry: "",
-          organizationContactNumber: "",
-          organizationEmail: "",
-          conferenceTitle: "",
-          conferenceDiscipline: "",
-          conferenceCountry: "",
-          conferenceEmail: "",
-          authorizedSignatory: "",
-        });
+        alert(data.message);
+        console.log("Subscriber created:", data.subscriber);
+        // After resetting the form, send the verification email
+        await sendVerificationEmail();
       } else {
         const errorData = await response.json();
-        toast.error(`Failed to create subscriber: ${errorData.message || "Unknown error"}`);
+        console.error("Error data:", errorData);
+        alert(`Failed to create subscriber: ${errorData.message || "Unknown error"}`);
       }
     } catch (error) {
       setIsLoading(false);
-      toast.error("An error occurred while submitting the data. Please try again later.");
       console.error("Error submitting data:", error);
+      alert("An error occurred while submitting the data. Please try again later.");
     }
   };
+  
+  
 
   return (
     <div className="container mx-auto">
-      <ToastContainer />
       <div className="flex justify-center">
         <div className="w-full h-full border border-3 shadow-sm p-3 mb-5 bg-body-tertiary rounded bg-slate-50 max-w-5xl mt-5">
           <div className="bg-white shadow-md rounded-lg p-6">
