@@ -18,9 +18,9 @@ const VerifyEmail = () => {
       return;
     }
 
-    // const apiUrl = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
-    const apiUrl = "https://subscriber-registration-backend-1.onrender.com";
-    
+    const apiUrl = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
+    // const apiUrl = "https://subscriber-registration-backend-1.onrender.com";
+
     if (!apiUrl) {
       console.error("API URL is not defined.");
       setMessage("Internal error occurred. Please contact support.");
