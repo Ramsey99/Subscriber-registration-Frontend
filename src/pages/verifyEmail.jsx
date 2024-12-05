@@ -39,7 +39,7 @@ const VerifyEmail = () => {
       .then((data) => {
         if (data.message === "Email verified successfully!") {
           setMessage("Email verified successfully!");
-          setEmailVerified(true);  // Set email as verified
+          setEmailVerified(true); // Set email as verified
           setShowModal(true);
         } else {
           setMessage("Email verification failed.");
@@ -72,25 +72,14 @@ const VerifyEmail = () => {
 
         {/* Modal for success message */}
         {showModal && (
-          <div
-            className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-            role="dialog"
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
-          >
+          <div className="flex justify-center items-center z-50">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-              <h2
-                id="modal-title"
-                className="text-2xl text-black mb-4"
-              >
+              <h2 id="modal-title" className="text-2xl text-black mb-4">
                 {message}
               </h2>
-              <p
-                id="modal-description"
-                className="text-gray-600 mb-6"
-              >
-                
-                The link to your Conference Management Software will be mailed to you shortly.
+              <p id="modal-description" className="text-gray-600 mb-6">
+                The link to your Conference Management Software will be mailed
+                to you shortly.
               </p>
               <button
                 className="bg-gray-500 text-white py-2 px-4 rounded-md transition"
