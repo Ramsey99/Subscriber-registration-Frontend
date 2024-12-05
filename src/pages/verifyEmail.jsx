@@ -56,7 +56,7 @@ const VerifyEmail = () => {
     setShowModal(false);
     if (emailVerified) {
       // Only redirect if email is successfully verified
-      window.location.href = "https://cms-alpha-sand.vercel.app/"; // Redirect to the external URL
+      // window.location.href = "https://cms-alpha-sand.vercel.app/"; // Redirect to the external URL
     }
   };
 
@@ -82,7 +82,7 @@ const VerifyEmail = () => {
                 id="modal-title"
                 className="text-2xl text-green-600 mb-4"
               >
-                Email Verified
+                Email Verified. The link to your Conference Management Software will be mailed to you shortly.
               </h2>
               <p
                 id="modal-description"
