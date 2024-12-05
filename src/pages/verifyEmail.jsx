@@ -76,7 +76,7 @@ const VerifyEmail = () => {
           <div className="flex justify-center items-center z-50">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
               <h2 id="modal-title" className="text-2xl text-black mb-4">
-                {message}
+                {/* {message} */}
               </h2>
               <p id="modal-description" className="text-gray-600 mb-6">
                 The link to your Conference Management Software will be mailed
