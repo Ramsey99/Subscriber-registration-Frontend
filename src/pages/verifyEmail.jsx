@@ -18,8 +18,9 @@ const VerifyEmail = () => {
       return;
     }
 
-    const apiUrl = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
-
+    // const apiUrl = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
+    const apiUrl = "https://subscriber-registration-backend-1.onrender.com";
+    
     if (!apiUrl) {
       console.error("API URL is not defined.");
       setMessage("Internal error occurred. Please contact support.");
@@ -62,7 +63,7 @@ const VerifyEmail = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen">
       <div className="text-center p-4 bg-white rounded-lg shadow-lg w-full max-w-md">
         {loading ? (
           <div className="text-gray-700 text-lg">Verifying email...</div>
