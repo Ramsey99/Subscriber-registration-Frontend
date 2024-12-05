@@ -92,7 +92,7 @@ const VerifyEmail = () => {
                 Email Verified. The link to your Conference Management Software will be mailed to you shortly.
               </p>
               <button
-                className="bg-black-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
+                className="bg-gray-500 text-white py-2 px-4 rounded-md transition"
                 onClick={closeModal}
               >
                 OK

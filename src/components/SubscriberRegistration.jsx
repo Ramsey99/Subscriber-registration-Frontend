@@ -229,7 +229,7 @@ const SubscriberRegistration = () => {
               {/* Submit Button */}
               <button
                 type="submit"
-                className={`bg-black-600 text-white px-4 py-2 rounded hover:bg-green-700`}
+                className={`bg-gray-500 text-white px-4 py-2 rounded`}
                 disabled={isLoading}
               >
                 {isLoading ? "Submitting..." : "Submit"}
