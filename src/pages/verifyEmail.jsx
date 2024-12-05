@@ -18,8 +18,8 @@ const VerifyEmail = () => {
       return;
     }
 
-    const apiUrl = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
-    // const apiUrl = "https://subscriber-registration-backend-1.onrender.com";
+    // const apiUrl = import.meta.env.VITE_SUBSCRIBER_REGISTRATION_URL;
+    const apiUrl = "https://subscriber-registration-backend-1.onrender.com";
 
     if (!apiUrl) {
       console.error("API URL is not defined.");
@@ -49,7 +49,7 @@ const VerifyEmail = () => {
       .catch((error) => {
         console.error("Error verifying email:", error);
         setLoading(false);
-        setMessage("An error occurred. Please try again later.");
+        setMessage("Already Verified.");
       });
   }, [location]);
 
