@@ -247,7 +247,7 @@ const SubscriberRegistration = () => {
             <p>A verification mail send to your official mail address. Please check and verify by clicking on 'Verify Email'.</p>
             <button
               onClick={() => setIsModalOpen(false)}
-              className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+              className="bg-gray-500 text-white px-4 py-2 rounded mt-4"
             >
               OK
             </button>

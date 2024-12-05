@@ -57,6 +57,7 @@ const VerifyEmail = () => {
     if (emailVerified) {
       // Only redirect if email is successfully verified
       // window.location.href = "https://cms-alpha-sand.vercel.app/"; // Redirect to the external URL
+      window.location.href = "about:blank"; // Or your custom URL
     }
   };
 
@@ -80,7 +81,7 @@ const VerifyEmail = () => {
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
               <h2
                 id="modal-title"
-                className="text-2xl text-green-600 mb-4"
+                className="text-2xl text-black mb-4"
               >
                 {message}
               </h2>
@@ -89,7 +90,7 @@ const VerifyEmail = () => {
                 className="text-gray-600 mb-6"
               >
                 
-                Email Verified. The link to your Conference Management Software will be mailed to you shortly.
+                The link to your Conference Management Software will be mailed to you shortly.
               </p>
               <button
                 className="bg-gray-500 text-white py-2 px-4 rounded-md transition"
