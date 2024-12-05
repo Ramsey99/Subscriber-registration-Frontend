@@ -82,19 +82,20 @@ const VerifyEmail = () => {
                 id="modal-title"
                 className="text-2xl text-green-600 mb-4"
               >
-                Email Verified. The link to your Conference Management Software will be mailed to you shortly.
+                {message}
               </h2>
               <p
                 id="modal-description"
                 className="text-gray-600 mb-6"
               >
-                {message}
+                
+                Email Verified. The link to your Conference Management Software will be mailed to you shortly.
               </p>
               <button
-                className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
+                className="bg-black-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
                 onClick={closeModal}
               >
-                Close
+                OK
               </button>
             </div>
           </div>
